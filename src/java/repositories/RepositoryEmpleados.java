@@ -2,6 +2,7 @@ package repositories;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -64,5 +65,31 @@ public class RepositoryEmpleados {
         rs.close();
         cn.close();
         return lista;
+    }
+
+    public Empleado existeEmpleado(String apellido, int idempleado) throws SQLException {
+        Connection cn = this.getConnection();
+        String sql = "select * from emp where apellido=? and emp_no=?";
+        PreparedStatement pst = cn.prepareStatement(sql);
+        pst.setString(1, apellido);
+        pst.setInt(2, idempleado);
+        ResultSet rs = pst.executeQuery();
+        if (rs.next()) {
+            //EXISTE EL EMPLEADO
+            int id = rs.getInt("EMP_NO");
+            String ape = rs.getString("APELLIDO");
+            String ofi = rs.getString("OFICIO");
+            int sal = rs.getInt("SALARIO");
+            int deptno = rs.getInt("DEPT_NO");
+            Empleado emp = new Empleado(id, ape, ofi, sal, deptno);
+            rs.close();
+            cn.close();
+            return emp;
+        } else {
+            //NO EXISTE
+            rs.close();
+            cn.close();
+            return null;
+        }
     }
 }
