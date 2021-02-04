@@ -1,6 +1,6 @@
 /*
-1) Quitar elementos de Session
-2) En lugar de mostrar los String de la sesión, quiero ver los empleados.
+1) Quitar elementos de Session CHECK
+2) En lugar de mostrar los String de la sesión, quiero ver los empleados. CHECK
 3) Cuando almacenemos un empleado, quitamos el LINK de almacenar.
  */
 package controllers;
@@ -54,10 +54,27 @@ public class ControllerEmpleados {
         } else {
             String html = "<ul>";
             for (String dato : sessionempleados) {
-                html += "<li>" + dato + "</li>";
+                html += "<li>" + dato + " | ";
+                html += "<a href='webmostrarempleadossession.jsp?eliminar=";
+                html += dato + "'>Quitar de sesión</a>";
+                html += "</li>";
             }
             html += "</ul>";
             return html;
+        }
+    }
+
+    public void eliminarEmpleadoSession(String idempleado) {
+        ArrayList<String> sessionempleados = (ArrayList) session.getAttribute("EMPLEADOS");
+        sessionempleados.remove(idempleado);
+        //SI NO EXISTEN MAS EMPLEADOS, DEBEMOS ELIMINAR EMPLEADOS
+        //DE SESSION
+        if (sessionempleados.size() == 0) {
+            //ELIMINAMOS SESSION
+            session.setAttribute("EMPLEADOS", null);
+        } else {
+            //ACTUALIZAMOS SESSION
+            session.setAttribute("EMPLEADOS", sessionempleados);
         }
     }
 
@@ -67,12 +84,24 @@ public class ControllerEmpleados {
 
     public String getTablaEmpleados() throws SQLException {
         ArrayList<Empleado> empleados = this.repo.getEmpleados();
+        ArrayList<String> sessionempleados = (ArrayList) session.getAttribute("EMPLEADOS");
         String html = "";
         for (Empleado emp : empleados) {
             html += "<tr>";
             html += "<td>";
-            html += "<a href='webalmacenarempleados.jsp?idempleado=";
-            html += emp.getIdEmpleado() + "'>Guardar en Session</a>";
+            String empno = String.valueOf(emp.getIdEmpleado());
+            if (sessionempleados == null) {
+                //PINTAMOS EL ENLACE ALMACENAR
+                html += "<a href='webalmacenarempleados.jsp?idempleado=";
+                html += emp.getIdEmpleado() + "'>Guardar en Session</a>";
+            } else if (sessionempleados.contains(empno) == false) {
+                //PINTAMOS EL ENLACE ALMACENAR
+                html += "<a href='webalmacenarempleados.jsp?idempleado=";
+                html += emp.getIdEmpleado() + "'>Guardar en Session</a>";
+            } else {
+                //PINTAMOS CUALQUIER DIBUJO
+                html += "<img src='images/check.jpg' style='width:25px;height:25px;'/>";
+            }
             html += "</td>";
             html += "<td>" + emp.getApellido() + "</td>";
             html += "<td>" + emp.getOficio() + "</td>";
@@ -81,5 +110,25 @@ public class ControllerEmpleados {
             html += "</tr>";
         }
         return html;
+    }
+
+    public String getEmpleadosSession() throws SQLException {
+        ArrayList<String> sessionempleados = (ArrayList) session.getAttribute("EMPLEADOS");
+        if (sessionempleados == null) {
+            //NO HAY NADA EN LA SESION
+            return "<h1 style='color:red'>No hay empleados en Session</h1>";
+        } else {
+            ArrayList<Empleado> empleados
+                    = this.repo.getEmpleadosSession(sessionempleados);
+            String html = "<ul>";
+            for (Empleado emp : empleados) {
+                html += "<li>" + emp.getApellido() + " | ";
+                html += "<a href='webmostrarempleadossession.jsp?eliminar=";
+                html += emp.getIdEmpleado() + "'>Quitar sesión</a>";
+                html += "</li>";
+            }
+            html += "</ul>";
+            return html;
+        }
     }
 }

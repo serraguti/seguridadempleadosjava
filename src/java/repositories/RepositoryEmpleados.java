@@ -38,4 +38,31 @@ public class RepositoryEmpleados {
         cn.close();
         return lista;
     }
+
+    public ArrayList<Empleado> getEmpleadosSession(ArrayList<String> idsempleados) throws SQLException {
+        //CONVERTIMOS LA COLECCION DE IDS A STRING SEPARADOS POR COMAS
+        String datos = "";
+        for (String id : idsempleados) {
+            datos += id + ",";
+        }
+        int ultimacoma = datos.lastIndexOf(",");
+        datos = datos.substring(0, ultimacoma);
+        Connection cn = this.getConnection();
+        String sql = "select * from emp where emp_no in (" + datos + ")";
+        Statement st = cn.createStatement();
+        ResultSet rs = st.executeQuery(sql);
+        ArrayList<Empleado> lista = new ArrayList<>();
+        while (rs.next()) {
+            int id = rs.getInt("EMP_NO");
+            String ape = rs.getString("APELLIDO");
+            String ofi = rs.getString("OFICIO");
+            int sal = rs.getInt("SALARIO");
+            int deptno = rs.getInt("DEPT_NO");
+            Empleado emp = new Empleado(id, ape, ofi, sal, deptno);
+            lista.add(emp);
+        }
+        rs.close();
+        cn.close();
+        return lista;
+    }
 }

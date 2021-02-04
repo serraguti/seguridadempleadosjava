@@ -12,10 +12,18 @@ controlleremp.setSession(session);
         <title>JSP Page</title>
     </head>
     <body>
+        <%
+        String eliminar = request.getParameter("eliminar");
+        if (eliminar != null){
+            //QUITAR DE LA SESION
+            controlleremp.eliminarEmpleadoSession(eliminar);
+        }
+        %>
+        
         <h1>MOSTRAR SESSION</h1>
         <a href="webalmacenarempleados.jsp">
             Almacenar empleados
         </a>
-        <%=controlleremp.getDatosSession()%>
+        <%=controlleremp.getEmpleadosSession()%>
     </body>
 </html>
