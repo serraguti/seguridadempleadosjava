@@ -27,7 +27,7 @@ controllerlogin.setSession(session);
             int idempleado = Integer.parseInt(dato);
             boolean acceso = controllerlogin.existeEmpleado(apellido, idempleado);
             if (acceso == true){
-                response.sendRedirect("protegida/usuarioempleado.jsp");
+                response.sendRedirect("proteccion/usuarioempleado.jsp");
             }else{
                 %>
                 <h1 style="color:red">Usuario/Password incorrectos</h1>

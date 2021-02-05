@@ -7,5 +7,6 @@
     </head>
     <body>
         <h1>No tiene permisos de acceso a esta zona</h1>
+        <img src="images/accesodenegado.jpg" alt="" style="width: 300px; height: 250px;"/>
     </body>
 </html>

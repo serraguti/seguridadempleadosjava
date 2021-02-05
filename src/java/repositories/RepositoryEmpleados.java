@@ -69,7 +69,7 @@ public class RepositoryEmpleados {
 
     public Empleado existeEmpleado(String apellido, int idempleado) throws SQLException {
         Connection cn = this.getConnection();
-        String sql = "select * from emp where apellido=? and emp_no=?";
+        String sql = "select * from emp where upper(apellido)=upper(?) and emp_no=?";
         PreparedStatement pst = cn.prepareStatement(sql);
         pst.setString(1, apellido);
         pst.setInt(2, idempleado);
